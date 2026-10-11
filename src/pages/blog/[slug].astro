@@ -1,0 +1,28 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { BlogPost } from '@kookee/react/blog';
+import { extractHeadings } from '@kookee/react/entry';
+import { Reactions, TrackedTableOfContents } from '@kookee/react/entry/client';
+import Base from '../../layouts/Base.astro';
+import { API_KEY, exportEntries, getBlogPost, getProject } from '../../lib/kookee';
+import { entryHead } from '../../lib/seo';
+
+export const getStaticPaths = (async () => {
+  const rows = await exportEntries(['blog']);
+  return rows.map((row) => ({ params: { slug: row.slug! } }));
+}) satisfies GetStaticPaths;
+
+const [post, project] = await Promise.all([getBlogPost(Astro.params.slug), getProject()]);
+---
+
+<Base {...entryHead(post, project!.name, Astro.site)}>
+  <div class="site-container site-article-layout">
+    <article class="site-article">
+      <BlogPost post={post} />
+      <Reactions client:idle entryId={post.id} reactions={post.reactions} config={{ apiKey: API_KEY! }} />
+    </article>
+    <aside class="site-aside">
+      <TrackedTableOfContents client:idle headings={extractHeadings(post.contentHtml)} offset={88} resetKey={post.id} />
+    </aside>
+  </div>
+</Base>

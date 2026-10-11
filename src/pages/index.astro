@@ -1,0 +1,56 @@
+---
+import { BlogPostList } from '@kookee/react/blog';
+import { ChangelogList } from '@kookee/react/changelog';
+import { HelpCategoryGrid } from '@kookee/react/help';
+import Base from '../layouts/Base.astro';
+import { getHelpCategories, getProject, listBlogPosts, listChangelog } from '../lib/kookee';
+import { getPath, hrefs } from '../lib/paths';
+
+const project = await getProject();
+const [posts, changelog, categories] = project
+  ? await Promise.all([listBlogPosts(1), listChangelog(1), getHelpCategories()])
+  : [null, null, []];
+---
+
+<Base>
+  {
+    project && (
+      <div class="site-container site-stack">
+        <section class="site-hero">
+          <h1>{project.name}</h1>
+          <p>News, product updates and answers, in one place.</p>
+        </section>
+
+        {posts && posts.data.length > 0 && (
+          <section class="site-section">
+            <div class="site-section-heading">
+              <h2>Latest posts</h2>
+              <a href="/blog">View all</a>
+            </div>
+            <BlogPostList posts={posts.data.slice(0, 3)} href={getPath} />
+          </section>
+        )}
+
+        {changelog && changelog.data.length > 0 && (
+          <section class="site-section">
+            <div class="site-section-heading">
+              <h2>Recent updates</h2>
+              <a href="/changelog">View all</a>
+            </div>
+            <ChangelogList entries={changelog.data.slice(0, 3)} href={getPath} />
+          </section>
+        )}
+
+        {categories.length > 0 && (
+          <section class="site-section">
+            <div class="site-section-heading">
+              <h2>Help center</h2>
+              <a href="/help">View all</a>
+            </div>
+            <HelpCategoryGrid categories={categories} href={hrefs.helpCategory} />
+          </section>
+        )}
+      </div>
+    )
+  }
+</Base>

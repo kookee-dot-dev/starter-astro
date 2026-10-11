@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    # The weekly run checks the newest @kookee packages, in this repository only, not in copies of the template.
+    if: github.event_name != 'schedule' || github.repository == 'kookee-dot-dev/starter-astro'
+    runs-on: ubuntu-latest
+    env:
+      # Empty on pull requests from forks: the build then renders the setup page and still runs astro check.
+      KOOKEE_API_KEY: ${{ secrets.KOOKEE_API_KEY }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Use the newest @kookee packages
+        if: github.event_name == 'schedule'
+        run: npm install --no-save @kookee/sdk@latest @kookee/react@latest
+      - run: npm run build

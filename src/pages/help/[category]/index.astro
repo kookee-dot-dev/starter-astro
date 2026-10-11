@@ -1,0 +1,28 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { HelpArticleList, HelpBreadcrumbs, HelpCategoryHeader, HelpCategoryNav } from '@kookee/react/help';
+import Base from '../../../layouts/Base.astro';
+import { getHelpCategories, listHelpArticles } from '../../../lib/kookee';
+import { hrefs } from '../../../lib/paths';
+
+export const getStaticPaths = (async () => {
+  const categories = await getHelpCategories();
+  return categories.map((category) => ({ params: { category: category.slug }, props: { category } }));
+}) satisfies GetStaticPaths;
+
+const { category } = Astro.props;
+const [categories, articles] = await Promise.all([getHelpCategories(), listHelpArticles(category.slug)]);
+---
+
+<Base title={category.name} description={category.description ?? undefined}>
+  <div class="site-container site-article-layout">
+    <div class="site-article">
+      <HelpBreadcrumbs homeHref="/help" category={category} categoryHref={hrefs.helpCategory} />
+      <HelpCategoryHeader category={category} />
+      <HelpArticleList articles={articles} href={hrefs.helpArticle} />
+    </div>
+    <aside class="site-aside">
+      <HelpCategoryNav categories={categories} activeCategorySlug={category.slug} href={hrefs.helpCategory} showCounts />
+    </aside>
+  </div>
+</Base>

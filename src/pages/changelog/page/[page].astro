@@ -1,0 +1,16 @@
+---
+import type { GetStaticPaths } from 'astro';
+import ChangelogIndex from '../../../components/ChangelogIndex.astro';
+import Base from '../../../layouts/Base.astro';
+import { hasKey, listChangelog } from '../../../lib/kookee';
+
+export const getStaticPaths = (async () => {
+  if (!hasKey()) return [];
+  const { totalPages } = await listChangelog(1);
+  return Array.from({ length: Math.max(0, totalPages - 1) }, (_, index) => ({ params: { page: String(index + 2) } }));
+}) satisfies GetStaticPaths;
+
+const page = Number(Astro.params.page);
+---
+
+<Base title={`Changelog, page ${page}`}><ChangelogIndex page={page} /></Base>

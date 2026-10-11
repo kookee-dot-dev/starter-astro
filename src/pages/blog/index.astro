@@ -1,0 +1,7 @@
+---
+import BlogIndex from '../../components/BlogIndex.astro';
+import Base from '../../layouts/Base.astro';
+import { hasKey } from '../../lib/kookee';
+---
+
+<Base title="Blog">{hasKey() && <BlogIndex page={1} />}</Base>

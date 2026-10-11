@@ -1,0 +1,28 @@
+---
+import { Roadmap } from '@kookee/react/roadmap';
+import Base from '../layouts/Base.astro';
+import { getProject, getRoadmap } from '../lib/kookee';
+
+// Added by the kookee-roadmap integration in astro.config.mjs unless KOOKEE_ROADMAP is "false".
+const project = await getProject();
+const roadmap = project ? await getRoadmap() : null;
+---
+
+<Base title="Roadmap">
+  {
+    roadmap && (
+      <div class="site-container">
+        <h1 class="site-title">Roadmap</h1>
+        <p class="site-lead">
+          What we are working on and what is under consideration.
+          {project?.portalUrl && (
+            <>
+              {' '}Vote and share ideas on <a href={project.portalUrl}>our portal</a>.
+            </>
+          )}
+        </p>
+        <Roadmap columns={roadmap.columns} posts={roadmap.posts} />
+      </div>
+    )
+  }
+</Base>

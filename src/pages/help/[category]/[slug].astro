@@ -1,0 +1,49 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { extractHeadings } from '@kookee/react/entry';
+import { TrackedTableOfContents } from '@kookee/react/entry/client';
+import { HelpArticle, HelpArticleNav, HelpBreadcrumbs } from '@kookee/react/help';
+import { HelpfulVote } from '@kookee/react/help/client';
+import Base from '../../../layouts/Base.astro';
+import { API_KEY, exportEntries, getHelpArticle, getProject, listHelpArticles } from '../../../lib/kookee';
+import { hrefs } from '../../../lib/paths';
+import { entryHead } from '../../../lib/seo';
+
+export const getStaticPaths = (async () => {
+  // exportEntries keeps only the rows with a page here, so every article has a category.
+  const rows = await exportEntries(['help_article']);
+  return rows.map((row) => ({ params: { category: row.category!.slug, slug: row.slug! } }));
+}) satisfies GetStaticPaths;
+
+const { category: categorySlug, slug } = Astro.params;
+const [article, siblings, project] = await Promise.all([
+  getHelpArticle(slug),
+  listHelpArticles(categorySlug),
+  getProject(),
+]);
+const category = article.category!;
+---
+
+<Base {...entryHead(article, project!.name, Astro.site)}>
+  <div class="site-container site-article-layout">
+    <article class="site-article">
+      <HelpBreadcrumbs homeHref="/help" category={category} categoryHref={hrefs.helpCategory} article={article} />
+      <HelpArticle article={article} />
+      <HelpfulVote client:idle entryId={article.id} reactions={article.reactions} config={{ apiKey: API_KEY! }} />
+    </article>
+    <aside class="site-aside">
+      <TrackedTableOfContents
+        client:idle
+        headings={extractHeadings(article.contentHtml)}
+        offset={88}
+        resetKey={article.id}
+      />
+      <HelpArticleNav
+        articles={siblings}
+        activeSlug={article.slug ?? undefined}
+        href={hrefs.helpArticle}
+        title={category.name}
+      />
+    </aside>
+  </div>
+</Base>

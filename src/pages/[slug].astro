@@ -1,0 +1,24 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { EntryContent } from '@kookee/react/entry';
+import Base from '../layouts/Base.astro';
+import { exportEntries, getPage, getProject } from '../lib/kookee';
+import { entryHead } from '../lib/seo';
+
+export const getStaticPaths = (async () => {
+  // exportEntries leaves out a page whose slug one of the site's own routes would hide.
+  const rows = await exportEntries(['page']);
+  return rows.map((row) => ({ params: { slug: row.slug! } }));
+}) satisfies GetStaticPaths;
+
+const [page, project] = await Promise.all([getPage(Astro.params.slug), getProject()]);
+---
+
+<Base {...entryHead(page, project!.name, Astro.site)}>
+  <div class="site-container site-narrow">
+    <article class="site-article">
+      <h1 class="site-title">{page.title}</h1>
+      <EntryContent entry={page} className="kookee-typography" />
+    </article>
+  </div>
+</Base>

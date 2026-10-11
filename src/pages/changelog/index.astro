@@ -1,0 +1,7 @@
+---
+import ChangelogIndex from '../../components/ChangelogIndex.astro';
+import Base from '../../layouts/Base.astro';
+import { hasKey } from '../../lib/kookee';
+---
+
+<Base title="Changelog">{hasKey() && <ChangelogIndex page={1} />}</Base>

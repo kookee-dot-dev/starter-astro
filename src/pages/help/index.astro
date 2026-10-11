@@ -1,0 +1,23 @@
+---
+import { HelpCategoryGrid } from '@kookee/react/help';
+import { HelpSearchBox } from '@kookee/react/help/client';
+import Base from '../../layouts/Base.astro';
+import { API_KEY, getHelpCategories } from '../../lib/kookee';
+import { hrefs } from '../../lib/paths';
+
+const categories = await getHelpCategories();
+---
+
+<Base title="Help center">
+  {
+    API_KEY && (
+      <div class="site-container">
+        <section class="site-help-hero">
+          <h1 class="site-title">How can we help?</h1>
+          <HelpSearchBox client:idle config={{ apiKey: API_KEY }} href={hrefs.helpArticle} />
+        </section>
+        <HelpCategoryGrid categories={categories} href={hrefs.helpCategory} />
+      </div>
+    )
+  }
+</Base>

@@ -1,0 +1,99 @@
+---
+import '@kookee/react/content.css';
+import '@kookee/sdk/styles/content.css';
+import '../styles/site.css';
+import { WhatsNew } from '@kookee/react/changelog/client';
+import { serializeJsonLd } from '@kookee/sdk';
+import ChatWidget from '../components/ChatWidget';
+import Setup from '../components/Setup';
+import { API_KEY, getProject, listChangelog, listPages, ROADMAP_ENABLED } from '../lib/kookee';
+import { getPath, hrefs } from '../lib/paths';
+
+interface Props {
+  /** The page's own title; the site name is added after it. */
+  title?: string;
+  /** A title written whole, such as an entry's meta title. */
+  absoluteTitle?: string;
+  description?: string;
+  canonical?: string | null;
+  image?: string | null;
+  type?: 'article' | 'website';
+  jsonLd?: Record<string, unknown> | null;
+}
+
+const { title, absoluteTitle, description, canonical, image, type = 'website', jsonLd } = Astro.props;
+const project = await getProject();
+const [changelog, pages] = project ? await Promise.all([listChangelog(1), listPages()]) : [null, null];
+const name = project?.name ?? 'Kookee starter';
+const fullTitle = absoluteTitle ?? (title ? `${title} · ${name}` : name);
+// The build sees `/blog/`; the sitemap and getPath use `/blog`.
+const canonicalUrl = canonical ?? new URL(Astro.url.pathname.replace(/(.)\/$/, '$1'), Astro.site).href;
+---
+
+<!doctype html>
+<html lang={project?.defaultLocale ?? 'en'} class="kookee-auto">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    {description && <meta name="description" content={description} />}
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <link rel="alternate" type="application/rss+xml" href="/blog/rss.xml" title={`${name} blog`} />
+    <link rel="alternate" type="application/rss+xml" href="/changelog/rss.xml" title={`${name} changelog`} />
+    <meta property="og:type" content={type} />
+    <meta property="og:title" content={absoluteTitle ?? title ?? name} />
+    {description && <meta property="og:description" content={description} />}
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:site_name" content={name} />
+    {image && <meta property="og:image" content={image} />}
+    <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
+    {jsonLd && <script type="application/ld+json" set:html={serializeJsonLd(jsonLd)} />}
+  </head>
+  <body>
+    {
+      project && API_KEY && changelog && pages ? (
+        <>
+          <header class="site-header">
+            <div class="site-container site-header-inner">
+              <a href="/" class="site-brand">
+                {project.name}
+              </a>
+              <nav aria-label="Main" class="site-nav">
+                <a href="/blog">Blog</a>
+                <a href="/changelog">Changelog</a>
+                <a href="/help">Help</a>
+                {ROADMAP_ENABLED && <a href="/roadmap">Roadmap</a>}
+                {project.portalUrl && <a href={project.portalUrl}>Portal ↗</a>}
+              </nav>
+              <WhatsNew client:idle entries={changelog.data} href={hrefs.changelogEntry} allHref="/changelog" />
+            </div>
+          </header>
+          <main class="site-main">
+            <slot />
+          </main>
+          <footer class="site-footer">
+            <div class="site-container site-footer-inner">
+              <nav aria-label="Pages" class="site-footer-links">
+                {pages.data.map((page) => {
+                  const path = getPath(page);
+                  return path && <a href={path}>{page.title}</a>;
+                })}
+                <a href="/blog/rss.xml">Blog RSS</a>
+                <a href="/changelog/rss.xml">Changelog RSS</a>
+              </nav>
+              <p>
+                © {project.name}. Content from <a href="https://kookee.dev">Kookee</a>.
+              </p>
+            </div>
+          </footer>
+          {project.widgetConfigured && <ChatWidget client:only="react" apiKey={API_KEY} />}
+        </>
+      ) : (
+        <main class="site-main">
+          <Setup />
+        </main>
+      )
+    }
+  </body>
+</html>

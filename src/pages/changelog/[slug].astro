@@ -1,0 +1,24 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { ChangelogArticle } from '@kookee/react/changelog';
+import { Reactions } from '@kookee/react/entry/client';
+import Base from '../../layouts/Base.astro';
+import { API_KEY, exportEntries, getChangelogEntry, getProject } from '../../lib/kookee';
+import { entryHead } from '../../lib/seo';
+
+export const getStaticPaths = (async () => {
+  const rows = await exportEntries(['changelog']);
+  return rows.map((row) => ({ params: { slug: row.slug! } }));
+}) satisfies GetStaticPaths;
+
+const [entry, project] = await Promise.all([getChangelogEntry(Astro.params.slug), getProject()]);
+---
+
+<Base {...entryHead(entry, project!.name, Astro.site)}>
+  <div class="site-container site-narrow">
+    <article class="site-article">
+      <ChangelogArticle entry={entry} showLink />
+      <Reactions client:idle entryId={entry.id} reactions={entry.reactions} config={{ apiKey: API_KEY! }} />
+    </article>
+  </div>
+</Base>
