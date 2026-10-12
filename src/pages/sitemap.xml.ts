@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { buildSitemap } from '@kookee/sdk';
-import { exportEntries, getHelpCategories, ROADMAP_ENABLED } from '../lib/kookee';
+import { exportEntries, getHelpCategories, ROADMAP_ENABLED, STATUS_ENABLED } from '../lib/kookee';
 import { getPath } from '../lib/paths';
 import { baseUrl } from '../lib/seo';
 
@@ -15,6 +15,7 @@ export const GET: APIRoute = async ({ site }) => {
       '/changelog',
       '/help',
       ...(ROADMAP_ENABLED ? ['/roadmap'] : []),
+      ...(STATUS_ENABLED ? ['/status'] : []),
       ...categories.map((category) => `/help/${category.slug}`),
     ],
   });

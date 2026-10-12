@@ -6,7 +6,7 @@ import { WhatsNew } from '@kookee/react/changelog/client';
 import { serializeJsonLd } from '@kookee/sdk';
 import ChatWidget from '../components/ChatWidget';
 import Setup from '../components/Setup';
-import { API_KEY, getProject, listChangelog, listPages, ROADMAP_ENABLED } from '../lib/kookee';
+import { API_KEY, getProject, listChangelog, listPages, ROADMAP_ENABLED, STATUS_ENABLED } from '../lib/kookee';
 import { getPath, hrefs } from '../lib/paths';
 
 interface Props {
@@ -64,6 +64,7 @@ const canonicalUrl = canonical ?? new URL(Astro.url.pathname.replace(/(.)\/$/, '
                 <a href="/changelog">Changelog</a>
                 <a href="/help">Help</a>
                 {ROADMAP_ENABLED && <a href="/roadmap">Roadmap</a>}
+                {STATUS_ENABLED && <a href="/status">Status</a>}
                 {project.portalUrl && <a href={project.portalUrl}>Portal ↗</a>}
               </nav>
               <WhatsNew client:idle entries={changelog.data} href={hrefs.changelogEntry} allHref="/changelog" />

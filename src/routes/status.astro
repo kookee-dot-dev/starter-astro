@@ -1,0 +1,21 @@
+---
+import { LiveStatusPage } from '../components/LiveStatus';
+import Base from '../layouts/Base.astro';
+import { API_KEY, getProject } from '../lib/kookee';
+
+// Added by the kookee-status integration in astro.config.mjs when KOOKEE_STATUS is "true".
+const project = await getProject();
+---
+
+<Base
+  title="Status"
+  description={project ? `Current status, incidents and uptime of ${project.name}.` : undefined}
+>
+  {
+    API_KEY && (
+      <div class="site-container site-narrow">
+        <LiveStatusPage client:load apiKey={API_KEY} />
+      </div>
+    )
+  }
+</Base>

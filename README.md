@@ -1,8 +1,8 @@
 # Kookee starter for Astro
 
 A static Astro site for the content of a [Kookee](https://kookee.dev) project: a blog, a
-changelog, a help center with search, your pages and a read-only roadmap, plus the Kookee site
-widget. Everything is read from Kookee at build time; a webhook rebuilds the site when you
+changelog, a help center with search, your pages, a read-only roadmap and, when you turn it on,
+your status page, plus the Kookee site widget. Everything is read from Kookee at build time; a webhook rebuilds the site when you
 publish.
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fkookee-dot-dev%2Fstarter-astro&env=KOOKEE_API_KEY&envDescription=A%20standard%20API%20key%20from%20your%20Kookee%20project%20(API%20keys%20%E2%86%92%20Create%20Key)&envLink=https%3A%2F%2Fkookee.dev%2Fhelp%2Fsdk-amp-integration%2Fstart-a-static-site-from-the-astro-starter&project-name=kookee-site&repository-name=kookee-site)
@@ -23,6 +23,7 @@ Built with Astro 7, React 19 for the interactive parts,
 | `/changelog`, `/changelog/page/2`, `/changelog/{slug}` | Changelog entries; an entry with reactions |
 | `/help`, `/help/{category}`, `/help/{category}/{slug}` | Help categories and search as you type; a category's articles; an article with its table of contents and the "Was this article helpful?" vote |
 | `/roadmap` | The open feedback posts by column, read-only. `KOOKEE_ROADMAP=false` leaves it out |
+| `/status`, `/status/incident?id={id}` | Your status page, as Kookee hosts it: incidents, maintenance, and each component's uptime over 90 days; an incident with its updates. Read in the browser, so it is always current, with times in the visitor's zone. `KOOKEE_STATUS=true` adds it |
 | `/{slug}` | Your pages, such as `/about` or `/privacy` |
 | `/sitemap.xml`, `/robots.txt`, `/llms.txt`, `/blog/rss.xml`, `/changelog/rss.xml` | Files for search engines, AI crawlers and feed readers |
 
@@ -64,6 +65,7 @@ All three are read at build time.
 | `KOOKEE_API_KEY` | yes | | A standard API key of your project |
 | `SITE_URL` | no | `https://` + Vercel's production domain, else `http://localhost:4321` | The site's address in canonical URLs, the sitemap, feeds and `llms.txt` |
 | `KOOKEE_ROADMAP` | no | `true` | `false` leaves `/roadmap` and its header link out of the build |
+| `KOOKEE_STATUS` | no | `false` | `true` adds `/status` and a header link to the build. Turn it on once the project has its status page set up |
 
 ## Allowed origins
 
@@ -117,6 +119,10 @@ footer's pages, read once;
 - in the browser: each help search, the widget's Help tab and article reader, and a reaction or
   helpful vote when clicked.
 
+The status page is read in the browser when it opens and again every minute while its tab is
+visible. Those reads do not count against the monthly quota; they have a rate limit of their own,
+ten times the project's per-minute limit.
+
 A build spaces its requests to about three a second, so it stays under the Free plan's 300
 requests a minute per project and leaves room for your visitors' browser reads, which share that
 limit. A site of 1,000 entries takes at least six minutes to build. The Free plan has 100,000
@@ -141,7 +147,7 @@ change a route.
   README](https://www.npmjs.com/package/@kookee/react).
 - **Languages:** the site reads your project's default language only, so every entry has one URL.
 - **Not shown:** help articles without a category (they have no URL here), a page whose slug is
-  `blog`, `changelog`, `help` or `roadmap`, and a blog post or changelog entry
+  `blog`, `changelog`, `help`, `roadmap` or `status` (even with the status page off), and a blog post or changelog entry
 whose slug is `page`, which the site's own routes would hide.
 
 ## Troubleshooting

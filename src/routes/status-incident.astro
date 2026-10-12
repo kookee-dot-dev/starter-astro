@@ -1,0 +1,18 @@
+---
+import { LiveStatusIncident } from '../components/LiveStatus';
+import Base from '../layouts/Base.astro';
+import { API_KEY } from '../lib/kookee';
+
+// Added by the kookee-status integration in astro.config.mjs when KOOKEE_STATUS is "true".
+---
+
+<Base title="Status">
+  {
+    API_KEY && (
+      <div class="site-container site-narrow">
+        <a href="/status" class="site-back">← Status</a>
+        <LiveStatusIncident client:load apiKey={API_KEY} />
+      </div>
+    )
+  }
+</Base>

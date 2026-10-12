@@ -21,6 +21,7 @@ const client = apiKey ? new Kookee({ apiKey, timeoutMs: 10_000, getPath }) : nul
 export const API_KEY = apiKey;
 
 export const ROADMAP_ENABLED = import.meta.env.KOOKEE_ROADMAP !== 'false';
+export const STATUS_ENABLED = import.meta.env.KOOKEE_STATUS === 'true';
 
 let nextSlot = 0;
 

@@ -10,8 +10,8 @@
   },
   "dependencies": {
     "@astrojs/react": "^7.0.1",
-    "@kookee/react": "^1.17.0",
-    "@kookee/sdk": "^1.17.0",
+    "@kookee/react": "^1.19.0",
+    "@kookee/sdk": "^1.19.0",
     "astro": "^7.3.8",
     "react": "^19.3.0",
     "react-dom": "^19.3.0"

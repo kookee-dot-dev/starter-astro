@@ -25,5 +25,18 @@ export default defineConfig({
         },
       },
     },
+    {
+      // The status pages exist only while KOOKEE_STATUS is "true". They render in the browser, so a
+      // static build never shows an old status, and an incident that starts after it has a page.
+      name: 'kookee-status',
+      hooks: {
+        'astro:config:setup': ({ injectRoute }) => {
+          if (env.KOOKEE_STATUS === 'true') {
+            injectRoute({ pattern: '/status', entrypoint: './src/routes/status.astro' });
+            injectRoute({ pattern: '/status/incident', entrypoint: './src/routes/status-incident.astro' });
+          }
+        },
+      },
+    },
   ],
 });
