@@ -159,6 +159,111 @@ a {
   color: var(--site-text);
 }
 
+/* Announcements: the pill hangs under the sticky header, whatever its height, and lets clicks
+   through around it. It opens a dialog with the list and one announcement at a time. */
+
+.site-announcement-slot {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  inset-inline: 0;
+  display: flex;
+  justify-content: center;
+  padding-inline: 1rem;
+  pointer-events: none;
+}
+
+.site-announcement-slot .kookee-announcement-pill {
+  pointer-events: auto;
+}
+
+/* No padding on the dialog itself: a click that lands on it, not on its content, is on the backdrop. */
+.site-dialog {
+  width: min(32rem, calc(100% - 2rem));
+  max-height: min(40rem, calc(100dvh - 2rem));
+  padding: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border: 1px solid var(--site-border);
+  border-radius: 14px;
+  background: var(--site-surface);
+  color: var(--site-text);
+  box-shadow: 0 24px 48px -12px rgb(0 0 0 / 0.3);
+}
+
+.site-dialog::backdrop {
+  background: rgb(15 17 21 / 0.45);
+}
+
+.site-dialog-header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 0.75rem 0.75rem 1.25rem;
+  border-bottom: 1px solid var(--site-border);
+  background: var(--site-surface);
+}
+
+.site-dialog-header h2 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 650;
+  outline: none;
+}
+
+.site-dialog-body {
+  padding: 0.5rem 0.5rem 1.25rem;
+}
+
+.site-dialog-close,
+.site-dialog-back {
+  border: 0;
+  background: none;
+  color: var(--site-text-muted);
+  font: inherit;
+  cursor: pointer;
+}
+
+.site-dialog-close {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border-radius: 8px;
+  font-size: 1.375rem;
+  line-height: 1;
+}
+
+.site-dialog-close:hover {
+  background: var(--site-surface-muted);
+  color: var(--site-text);
+}
+
+.site-dialog-back {
+  margin: 0.25rem 0 0.75rem 0.5rem;
+  padding: 0.25rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+}
+
+.site-dialog-back:hover {
+  color: var(--site-text);
+}
+
+.site-dialog-body .kookee-announcement-article {
+  padding-inline: 0.75rem;
+}
+
+.site-dialog-close:focus-visible,
+.site-dialog-back:focus-visible {
+  outline: 2px solid var(--site-accent);
+  outline-offset: 2px;
+}
+
 /* Footer */
 
 .site-footer {

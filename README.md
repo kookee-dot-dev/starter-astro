@@ -25,14 +25,20 @@ Built with Astro 7, React 19 for the interactive parts,
 | `/roadmap` | The open feedback posts by column, read-only. `KOOKEE_ROADMAP=false` leaves it out |
 | `/status`, `/status/incident?id={id}` | Your status page, as Kookee hosts it: incidents, maintenance, and each component's uptime over 90 days; an incident with its updates. Read in the browser, so it is always current, with times in the visitor's zone. `KOOKEE_STATUS=true` adds it |
 | `/{slug}` | Your pages, such as `/about` or `/privacy` |
+| Every page | Your newest announcement as a pill under the header; it opens a dialog with the ten newest and each one in full |
 | `/sitemap.xml`, `/robots.txt`, `/llms.txt`, `/blog/rss.xml`, `/changelog/rss.xml` | Files for search engines, AI crawlers and feed readers |
 
 Pages are plain HTML. Only the interactive parts load JavaScript, once the browser is idle: the
-"What's new" badge in the header, reactions, the helpful vote, the table of contents and help
-search. The site widget appears after you save its settings in the Kookee dashboard (**Site widget
-→ Customize**) and rebuild. Once it shows, it loads its tabs and texts in the browser, so later
-changes to them show within about a minute. The header links to your hosted portal when the
-project has it switched on.
+"What's new" badge in the header, the announcement pill, reactions, the helpful vote, the table of
+contents and help search. The site widget appears after you save its settings in the Kookee
+dashboard (**Site widget → Customize**) and rebuild. Once it shows, it loads its tabs and texts in
+the browser, so later changes to them show within about a minute. The header links to your hosted
+portal when the project has it switched on.
+
+The announcement pill shows the newest announcement a visitor has not dismissed. Dismissals are
+kept in the visitor's browser, so the pill appears once the page has loaded. The build reads the
+ten newest announcements in full, so opening one makes no request. Without announcements there is
+no pill.
 
 Every post, changelog entry, help article and page has its title, description, canonical URL, Open
 Graph tags and schema.org JSON-LD, taken from the entry and its SEO fields; the lists have a title
@@ -114,8 +120,8 @@ Every request with the key counts against the monthly request quota of the proje
 account, shared by all their projects:
 
 - during each build: one read per entry page, plus the lists, one export of every entry for the
-paths, the sitemap and `llms.txt`, and the project, the header's changelog entries and the
-footer's pages, read once;
+paths, the sitemap and `llms.txt`, and the project, the header's changelog entries, the
+announcements (the list and one read for each, up to ten) and the footer's pages, read once;
 - in the browser: each help search, the widget's Help tab and article reader, and a reaction or
   helpful vote when clicked.
 

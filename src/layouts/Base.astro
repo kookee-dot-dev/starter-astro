@@ -4,9 +4,18 @@ import '@kookee/sdk/styles/content.css';
 import '../styles/site.css';
 import { WhatsNew } from '@kookee/react/changelog/client';
 import { serializeJsonLd } from '@kookee/sdk';
+import Announcements from '../components/Announcements';
 import ChatWidget from '../components/ChatWidget';
 import Setup from '../components/Setup';
-import { API_KEY, getProject, listChangelog, listPages, ROADMAP_ENABLED, STATUS_ENABLED } from '../lib/kookee';
+import {
+  API_KEY,
+  getAnnouncements,
+  getProject,
+  listChangelog,
+  listPages,
+  ROADMAP_ENABLED,
+  STATUS_ENABLED,
+} from '../lib/kookee';
 import { getPath, hrefs } from '../lib/paths';
 
 interface Props {
@@ -23,7 +32,9 @@ interface Props {
 
 const { title, absoluteTitle, description, canonical, image, type = 'website', jsonLd } = Astro.props;
 const project = await getProject();
-const [changelog, pages] = project ? await Promise.all([listChangelog(1), listPages()]) : [null, null];
+const [changelog, pages, announcements] = project
+  ? await Promise.all([listChangelog(1), listPages(), getAnnouncements()])
+  : [null, null, null];
 const name = project?.name ?? 'Kookee starter';
 const fullTitle = absoluteTitle ?? (title ? `${title} · ${name}` : name);
 // The build sees `/blog/`; the sitemap and getPath use `/blog`.
@@ -52,7 +63,7 @@ const canonicalUrl = canonical ?? new URL(Astro.url.pathname.replace(/(.)\/$/, '
   </head>
   <body>
     {
-      project && API_KEY && changelog && pages ? (
+      project && API_KEY && changelog && pages && announcements ? (
         <>
           <header class="site-header">
             <div class="site-container site-header-inner">
@@ -69,6 +80,7 @@ const canonicalUrl = canonical ?? new URL(Astro.url.pathname.replace(/(.)\/$/, '
               </nav>
               <WhatsNew client:idle entries={changelog.data} href={hrefs.changelogEntry} allHref="/changelog" />
             </div>
+            {announcements.length > 0 && <Announcements client:idle announcements={announcements} />}
           </header>
           <main class="site-main">
             <slot />

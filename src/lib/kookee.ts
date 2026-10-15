@@ -4,8 +4,8 @@ import { getPath } from './paths';
 /**
  * Every Kookee read of the build goes through here. Reads are spaced to at most three a second
  * (180 a minute), under the Free plan's 300 a minute per project, which the live site's browser
- * reads share. Reads every page repeats (the project, the header's changelog, the footer's pages,
- * the help categories) happen once per build.
+ * reads share. Reads every page repeats (the project, the header's changelog and announcements,
+ * the footer's pages, the help categories) happen once per build.
  */
 
 export const PAGE_SIZE = 12;
@@ -58,6 +58,13 @@ export const getHelpCategories = () =>
 
 export const listHelpArticles = (category: string) =>
   readOnce(`help:${category}`, async (kookee) => (await kookee.help.list({ category, limit: 100 })).data);
+
+/** The ten newest announcements in full, so the header's pill opens them without a request from the browser. */
+export const getAnnouncements = () =>
+  readOnce('announcements', async (kookee) => {
+    const list = await kookee.announcements.list({ limit: 10 });
+    return Promise.all(list.data.map((item) => throttled((next) => next.announcements.getById(item.id))));
+  });
 
 export const getBlogPost = (slug: string) => throttled((kookee) => kookee.blog.getBySlug(slug));
 export const getChangelogEntry = (slug: string) => throttled((kookee) => kookee.changelog.getBySlug(slug));
