@@ -1,18 +1,20 @@
 ---
+import { getFaqJsonLd } from '@kookee/sdk';
 import { BlogPostList } from '@kookee/react/blog';
 import { ChangelogList } from '@kookee/react/changelog';
+import { FaqList } from '@kookee/react/faq';
 import { HelpCategoryGrid } from '@kookee/react/help';
 import Base from '../layouts/Base.astro';
-import { getHelpCategories, getProject, listBlogPosts, listChangelog } from '../lib/kookee';
+import { getHelpCategories, getProject, listBlogPosts, listChangelog, listFaq } from '../lib/kookee';
 import { getPath, hrefs } from '../lib/paths';
 
 const project = await getProject();
-const [posts, changelog, categories] = project
-  ? await Promise.all([listBlogPosts(1), listChangelog(1), getHelpCategories()])
-  : [null, null, []];
+const [posts, changelog, categories, faq] = project
+  ? await Promise.all([listBlogPosts(1), listChangelog(1), getHelpCategories(), listFaq('home')])
+  : [null, null, [], []];
 ---
 
-<Base>
+<Base jsonLd={getFaqJsonLd(faq)}>
   {
     project && (
       <div class="site-container site-stack">
@@ -48,6 +50,15 @@ const [posts, changelog, categories] = project
               <a href="/help">View all</a>
             </div>
             <HelpCategoryGrid categories={categories} href={hrefs.helpCategory} />
+          </section>
+        )}
+
+        {faq.length > 0 && (
+          <section class="site-section">
+            <div class="site-section-heading">
+              <h2>Frequently asked questions</h2>
+            </div>
+            <FaqList items={faq} />
           </section>
         )}
       </div>

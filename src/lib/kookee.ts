@@ -59,6 +59,10 @@ export const getHelpCategories = () =>
 export const listHelpArticles = (category: string) =>
   readOnce(`help:${category}`, async (kookee) => (await kookee.help.list({ category, limit: 100 })).data);
 
+/** The FAQ items of a category, in the order the team set, each with its answer. */
+export const listFaq = (category: string) =>
+  readOnce(`faq:${category}`, async (kookee) => (await kookee.faq.list({ category, limit: 50 })).data);
+
 /** The ten newest announcements in full, so the header's pill opens them without a request from the browser. */
 export const getAnnouncements = () =>
   readOnce('announcements', async (kookee) => {
