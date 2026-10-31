@@ -13,7 +13,7 @@
     "@kookee/react": "^1.22.1",
     "@kookee/sdk": "^1.22.1",
     "astro": "^7.3.8",
-    "react": "^19.3.0",
+    "react": "^19.3.1",
     "react-dom": "^19.3.0"
   },
   "devDependencies": {
