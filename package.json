@@ -14,7 +14,7 @@
     "@kookee/sdk": "^1.22.1",
     "astro": "^7.3.8",
     "react": "^19.3.0",
-    "react-dom": "^19.3.0"
+    "react-dom": "^19.3.1"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
