@@ -17,7 +17,7 @@ export type SiteType = (typeof SITE_TYPES)[number];
 const apiKey = import.meta.env.KOOKEE_API_KEY || null;
 const client = apiKey ? new Kookee({ apiKey, timeoutMs: 10_000, getPath }) : null;
 
-/** The key the browser pieces (reactions, helpful vote, help search, widget) send. It is public by design. */
+/** The key the browser pieces (reactions, helpful vote, roadmap votes, help search, widget) send. It is public by design. */
 export const API_KEY = apiKey;
 
 export const ROADMAP_ENABLED = import.meta.env.KOOKEE_ROADMAP !== 'false';

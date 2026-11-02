@@ -1,7 +1,7 @@
 # Kookee starter for Astro
 
 A static Astro site for the content of a [Kookee](https://kookee.dev) project: a blog, a
-changelog, a help center with search, your pages, a read-only roadmap and, when you turn it on,
+changelog, a help center with search, your pages, a roadmap visitors can vote on and, when you turn it on,
 your status page, plus the Kookee site widget. Everything is read from Kookee at build time; a webhook rebuilds the site when you
 publish.
 
@@ -23,14 +23,14 @@ Built with Astro 7, React 19 for the interactive parts,
 | `/blog`, `/blog/page/2`, `/blog/{slug}` | Blog posts, 12 per page; a post with its table of contents and reactions |
 | `/changelog`, `/changelog/page/2`, `/changelog/{slug}` | Changelog entries; an entry with reactions |
 | `/help`, `/help/{category}`, `/help/{category}/{slug}` | Help categories and search as you type; a category's articles; an article with its table of contents and the "Was this article helpful?" vote |
-| `/roadmap` | The open feedback posts by column, read-only. `KOOKEE_ROADMAP=false` leaves it out |
+| `/roadmap` | The open feedback posts by column, with a vote button that needs no sign-in. `KOOKEE_ROADMAP=false` leaves it out |
 | `/status`, `/status/incident?id={id}` | Your status page, as Kookee hosts it: incidents, maintenance, and each component's uptime over 90 days; an incident with its updates. Read in the browser, so it is always current, with times in the visitor's zone. `KOOKEE_STATUS=true` adds it |
 | `/{slug}` | Your pages, such as `/about` or `/privacy` |
 | Every page | Your newest announcement as a pill under the header; it opens a dialog with the ten newest and each one in full |
 | `/sitemap.xml`, `/robots.txt`, `/llms.txt`, `/blog/rss.xml`, `/changelog/rss.xml` | Files for search engines, AI crawlers and feed readers |
 
 Pages are plain HTML. Only the interactive parts load JavaScript, once the browser is idle: the
-"What's new" badge in the header, the announcement pill, reactions, the helpful vote, the table of
+"What's new" badge in the header, the announcement pill, reactions, the helpful vote, the roadmap's vote buttons, the table of
 contents and help search. The site widget appears after you save its settings in the Kookee
 dashboard (**Site widget → Customize**) and rebuild. Once it shows, it loads its tabs and texts in
 the browser, so later changes to them show within about a minute. The header links to your hosted
@@ -77,7 +77,7 @@ All three are read at build time.
 ## Allowed origins
 
 The key is read during the build, and it is also written into the pages for the parts that run in
-the browser: reactions, the helpful vote, help search and the site widget. In Kookee, open
+the browser: reactions, the helpful vote, roadmap votes, help search and the site widget. In Kookee, open
 **Settings → Project** and add your production domain and `http://localhost` to the **Allowed
 Origins** card; `http://localhost` covers every port, and an origin with a port is not accepted.
 Once the list holds an address, browsers on other sites are refused with `403 ORIGIN_NOT_ALLOWED`;
@@ -89,7 +89,7 @@ can change the list.
 ## What the key can do
 
 Anyone can copy the key from your pages. With it they can read your published content, add
-reactions and helpful votes, search the help center, ask the AI assistant and send feedback
+reactions, helpful votes and roadmap votes, search the help center, ask the AI assistant and send feedback
 through the widget. It cannot read drafts or change content.
 
 Allowed origins stop other sites' browsers, not scripts, which send no `Origin` header. If the key
